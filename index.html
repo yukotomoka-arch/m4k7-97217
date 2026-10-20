@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,268 +8,282 @@
 <title>REC</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
 
-body{
-    margin:0;
-    background:#000;
-    color:#fff;
-    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    overflow:hidden;
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
 }
 
 /* 確認画面 */
-
-#intro{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+#intro {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.messageBox{
-    width:min(90%,500px);
-    text-align:center;
-    line-height:1.8;
+.messageBox {
+    width: min(90%, 500px);
+    text-align: center;
+    line-height: 1.8;
 }
 
-.messageBox h2{
-    margin-bottom:30px;
+.messageBox h2 {
+    margin-bottom: 30px;
 }
 
-.messageBox button{
-    margin-top:30px;
-    padding:12px 24px;
-    font-size:16px;
-    background:white;
-    border:none;
-    border-radius:8px;
+.messageBox button {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 /* REC画面 */
-
-#start{
-    position:relative;
-    height:100vh;
-    width:100vw;
-    display:none;
+#start {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background: #000;
 }
 
-.topbar{
-    position:absolute;
-    top:20px;
-    left:20px;
-    right:20px;
-    display:flex;
-    justify-content:space-between;
-    font-size:14px;
-    letter-spacing:0.15em;
-    opacity:.8;
+.topbar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    letter-spacing: .15em;
+    opacity: .8;
 }
 
-.rec-indicator{
-    color:red;
-    animation:blink 1s infinite;
+.rec-indicator {
+    color: red;
+    animation: blink 1s infinite;
 }
 
-@keyframes blink{
-    50%{
-        opacity:.3;
+@keyframes blink {
+    50% { opacity: .3; }
+}
+
+.viewfinder {
+    position: absolute;
+    inset: 60px 30px 120px;
+    overflow: hidden;
+}
+
+#cameraPreview {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+}
+
+/* 四隅の枠 */
+.corner {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    z-index: 2;
+}
+
+.tl {
+    top: 0;
+    left: 0;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+}
+
+.tr {
+    top: 0;
+    right: 0;
+    border-top: 2px solid white;
+    border-right: 2px solid white;
+}
+
+.bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
+}
+
+.br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+}
+
+.message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: .6;
+    font-size: 15px;
+    line-height: 1.8;
+    letter-spacing: .1em;
+    pointer-events: none;
+}
+
+#recButton {
+    position: absolute;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dot {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: red;
+    margin-bottom: 12px;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(.9);
+        opacity: .7;
     }
 }
 
-.viewfinder{
-    position:absolute;
-    inset:60px 30px 120px 30px;
+.label {
+    letter-spacing: .2em;
+    font-size: 14px;
 }
 
-.corner{
-    position:absolute;
-    width:35px;
-    height:35px;
+/* MP4動画：90度回転 */
+#video {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vh;
+    height: 100vw;
+    object-fit: contain;
+    background: black;
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 1;
+    transition: opacity 2s ease;
 }
-
-.tl{
-    top:0;
-    left:0;
-    border-top:2px solid white;
-    border-left:2px solid white;
-}
-
-.tr{
-    top:0;
-    right:0;
-    border-top:2px solid white;
-    border-right:2px solid white;
-}
-
-.bl{
-    bottom:0;
-    left:0;
-    border-bottom:2px solid white;
-    border-left:2px solid white;
-}
-
-.br{
-    bottom:0;
-    right:0;
-    border-bottom:2px solid white;
-    border-right:2px solid white;
-}
-
-.message{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    text-align:center;
-    opacity:.6;
-    font-size:15px;
-    line-height:1.8;
-    letter-spacing:.1em;
-}
-
-#recButton{
-    position:absolute;
-    left:50%;
-    bottom:40px;
-    transform:translateX(-50%);
-    background:none;
-    border:none;
-    color:white;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    cursor:pointer;
-}
-
-.dot{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background:red;
-    margin-bottom:12px;
-    animation:pulse 1.2s infinite;
-}
-
-@keyframes pulse{
-    50%{
-        transform:scale(.9);
-        opacity:.7;
-    }
-}
-
-.label{
-    letter-spacing:.2em;
-    font-size:14px;
-}
-
-/* 動画 */
-
-video{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    width:100vh;
-    height:100vw;
-    object-fit:contain;
-    background:black;
-
-    transform:translate(-50%, -50%) rotate(90deg);
-    opacity:1;
-    transition:opacity 2s ease;
-}
-
 </style>
 </head>
 
 <body>
 
 <!-- 確認画面 -->
-
 <div id="intro">
-
     <div class="messageBox">
-
         <h2>確認画面</h2>
-
         <p>
-        係の案内があるまで<br>
-        この画面のままお待ちください
+            係の案内があるまで<br>
+            この画面のままお待ちください
         </p>
-
-        <button id="nextBtn">
-        確認しました
-        </button>
-
+        <button id="nextBtn">確認しました</button>
     </div>
-
 </div>
 
 <!-- REC画面 -->
-
 <div id="start">
-
     <div class="topbar">
         <div><span class="rec-indicator">● REC</span></div>
         <div>CAM 01</div>
     </div>
 
-   <div class="viewfinder">
-    <video id="cameraPreview" autoplay playsinline muted></video>
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
-</div>
-    <div class="message">
-        稽古映像を記録します
+    <div class="viewfinder">
+        <video id="cameraPreview" autoplay playsinline muted></video>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
     </div>
+
+    <div class="message">稽古映像を記録します</div>
 
     <button id="recButton">
         <div class="dot"></div>
         <div class="label">REC</div>
     </button>
-
 </div>
 
-
-<!-- MP4動画 -->
+<!-- 再生する動画 -->
 <video id="video" playsinline>
     <source src="movie.mp4" type="video/mp4">
 </video>
 
-
 <script>
-
 const intro = document.getElementById("intro");
 const start = document.getElementById("start");
-const video = document.getElementById("video");
+const nextBtn = document.getElementById("nextBtn");
+const recButton = document.getElementById("recButton");
 const cameraPreview = document.getElementById("cameraPreview");
+const video = document.getElementById("video");
+
 let cameraStream = null;
+
+/* 外カメラを優先して起動 */
 async function startCamera() {
     try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false
-        });
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
+            throw new Error("このブラウザではカメラを利用できません");
+        }
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: { ideal: "environment" }
+                },
+                audio: false
+            });
 
         cameraPreview.srcObject = cameraStream;
         cameraPreview.style.display = "block";
-await cameraPreview.play();
+        await cameraPreview.play();
+
     } catch (error) {
-        console.error("カメラを起動できませんでした:", error);
-        alert("カメラを起動できませんでした。カメラの使用を許可してください。");
+        console.error("カメラ起動エラー:", error);
+        alert(
+            "カメラを起動できませんでした。\n" +
+            "ブラウザのカメラ使用許可を確認してください。"
+        );
     }
 }
 
-document.getElementById("nextBtn").onclick = () => {
+/* 確認しました → REC画面 */
+nextBtn.onclick = async () => {
     intro.style.display = "none";
     start.style.display = "block";
-    startCamera();
+    await startCamera();
 };
 
-document.getElementById("recButton").onclick = () => {
+/* RECボタン → MP4再生 */
+recButton.onclick = async () => {
     start.style.display = "none";
 
     if (cameraStream) {
@@ -276,23 +291,35 @@ document.getElementById("recButton").onclick = () => {
         cameraStream = null;
     }
 
+    cameraPreview.srcObject = null;
     cameraPreview.style.display = "none";
+
+    video.style.transition = "none";
+    video.style.opacity = "1";
     video.style.display = "block";
-    video.play();
+
+    try {
+        await video.play();
+    } catch (error) {
+        console.error("動画再生エラー:", error);
+        alert("動画を再生できません。movie.mp4 の配置を確認してください。");
+    }
 };
 
+/* 動画終了 → フェードアウト */
 video.addEventListener("ended", () => {
-
+    video.style.transition = "opacity 2s ease";
     video.style.opacity = "0";
 
     setTimeout(() => {
-
         video.style.display = "none";
-
     }, 2000);
-
 });
 
+/* 動画の再生失敗時に画面が真っ黒のままになるのを防ぐ */
+video.addEventListener("error", () => {
+    console.error("movie.mp4 を読み込めませんでした");
+});
 </script>
 
 </body>
