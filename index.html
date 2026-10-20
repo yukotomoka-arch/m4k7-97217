@@ -251,13 +251,13 @@ async function startCamera() {
     try {
         if (!navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia) {
-            throw new Error("このブラウザではカメラを利用できません");
+            throw new Error("カメラを利用できません");
         }
 
         cameraStream =
             await navigator.mediaDevices.getUserMedia({
                 video: {
-                    facingMode: { ideal: "environment" }
+                    facingMode: { exact: "environment" }
                 },
                 audio: false
             });
@@ -267,10 +267,11 @@ async function startCamera() {
         await cameraPreview.play();
 
     } catch (error) {
-        console.error("カメラ起動エラー:", error);
+        console.error("外カメラ起動エラー:", error);
+
         alert(
-            "カメラを起動できませんでした。\n" +
-            "ブラウザのカメラ使用許可を確認してください。"
+            "外カメラを起動できませんでした。\n" +
+            "端末の外カメラとブラウザのカメラ許可を確認してください。"
         );
     }
 }
