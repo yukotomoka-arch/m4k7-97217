@@ -175,6 +175,18 @@ video{
     transition:opacity 2s ease;
 }
 
+    
+/* 横動画を縦持ちスマホで90度回転 */
+video {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100vh;
+  height: 100vw;
+  object-fit: contain;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
 </style>
 </head>
 
