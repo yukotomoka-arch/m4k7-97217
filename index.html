@@ -214,13 +214,13 @@ video{
         <div>CAM 01</div>
     </div>
 
-    <div class="viewfinder">
-        <div class="corner tl"></div>
-        <div class="corner tr"></div>
-        <div class="corner bl"></div>
-        <div class="corner br"></div>
-    </div>
-
+   <div class="viewfinder">
+    <video id="cameraPreview" autoplay playsinline muted></video>
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+</div>
     <div class="message">
         稽古映像を記録します
     </div>
@@ -232,33 +232,53 @@ video{
 
 </div>
 
-<!-- 動画 -->
 
+<!-- MP4動画 -->
 <video id="video" playsinline>
     <source src="movie.mp4" type="video/mp4">
 </video>
+
+<!-- カメラ映像 -->
+<video id="cameraPreview" autoplay playsinline></video>
+
 
 <script>
 
 const intro = document.getElementById("intro");
 const start = document.getElementById("start");
 const video = document.getElementById("video");
+const cameraPreview = document.getElementById("cameraPreview");
+let cameraStream = null;
+async function startCamera() {
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        });
 
-document.getElementById("nextBtn").onclick = () => {
-
+        cameraPreview.srcObject = cameraStream;
+        cameraPreview.style.display = "block";
+await cameraPreview.play();
+    } catch (error) {
+        console.error("カメラを起動できませんでした:", error);
+        alert("カメラを起動できませんでした。カメラの使用を許可してください。");
+    }
+}
+start.onclick = () => {
     intro.style.display = "none";
-    start.style.display = "block";
-
+    startCamera();
 };
-
 document.getElementById("recButton").onclick = () => {
-
     start.style.display = "none";
 
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+
+    cameraPreview.style.display = "none";
     video.style.display = "block";
-
     video.play();
-
 };
 
 video.addEventListener("ended", () => {
