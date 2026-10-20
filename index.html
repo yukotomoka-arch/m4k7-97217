@@ -21,12 +21,19 @@ body {
 }
 
 /* 確認画面 */
+
 #intro {
-    height: 100vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vh;
+    height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 
 .messageBox {
     width: min(90%, 500px);
